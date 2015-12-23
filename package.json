@@ -1,0 +1,36 @@
+{
+  "name": "throughv",
+  "version": "0.0.1",
+  "description": "Bulk through",
+  "main": "throughv.js",
+  "scripts": {
+    "test": "standard && tape test.js | faucet"
+  },
+  "precommit": "test",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mcollina/throughv.git"
+  },
+  "keywords": [
+    "bulk",
+    "through",
+    "writev"
+  ],
+  "author": "Matteo Collina <hello@matteocollina.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mcollina/throughv/issues"
+  },
+  "homepage": "https://github.com/mcollina/throughv#readme",
+  "dependencies": {
+    "fastparallel": "^2.2.1",
+    "readable-stream": "^2.0.4",
+    "inherits": "~2.0.1"
+  },
+  "devDependencies": {
+    "faucet": "0.0.1",
+    "pre-commit": "^1.1.2",
+    "standard": "^5.4.1",
+    "tape": "^4.2.2"
+  }
+}
