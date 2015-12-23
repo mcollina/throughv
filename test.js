@@ -123,3 +123,66 @@ test('process things in parallel with buffers', function (t) {
 test('throughv', function (t) {
   itWorksWithBuffers(t, Throughv)
 })
+
+test('no transform function required', function (t) {
+  t.plan(3)
+
+  var list = ['a', 'b', 'c']
+  var throughv = Throughv.obj()
+
+  list.forEach(throughv.write.bind(throughv))
+
+  throughv.on('data', function (chunk) {
+    t.equal(chunk, list.shift())
+  })
+})
+
+test('flush with throughv.obj', function (t) {
+  t.plan(2)
+
+  var list = ['a', 'b', 'c']
+  var throughv = Throughv.obj(transform, flush)
+
+  list.forEach(throughv.write.bind(throughv))
+
+  throughv.on('end', function () {
+    t.pass('end  emitted')
+  })
+
+  throughv.end()
+  throughv.resume()
+
+  function transform (chunk, enc, cb) {
+    cb(null, chunk)
+  }
+
+  function flush (cb) {
+    t.pass('flush called')
+    cb()
+  }
+})
+
+test('flush throughv', function (t) {
+  t.plan(2)
+
+  var list = ['a', 'b', 'c']
+  var throughv = Throughv(transform, flush)
+
+  list.forEach(throughv.write.bind(throughv))
+
+  throughv.on('end', function () {
+    t.pass('end  emitted')
+  })
+
+  throughv.end()
+  throughv.resume()
+
+  function transform (chunk, enc, cb) {
+    cb(null, chunk)
+  }
+
+  function flush (cb) {
+    t.pass('flush called')
+    cb()
+  }
+})

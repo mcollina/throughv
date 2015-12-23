@@ -45,17 +45,19 @@ function afterTransform (stream, er, data) {
   }
 }
 
-function BulkTransform (options, transform) {
+function BulkTransform (options, transform, flush) {
   if (!(this instanceof BulkTransform)) {
-    if (typeof options === 'function') {
-      transform = options
-      options = {}
-    }
-    if (transform) {
-      options.transform = transform
-    }
-    return new BulkTransform(options)
+    return new BulkTransform(options, transform, flush)
   }
+
+  if (typeof options === 'function') {
+    flush = transform
+    transform = options
+    options = {}
+  }
+  options = options || {}
+  options.flush = flush
+  options.transform = transform
 
   Duplex.call(this, options)
 
@@ -95,7 +97,7 @@ function BulkTransform (options, transform) {
 inherits(BulkTransform, Duplex)
 
 BulkTransform.prototype._transform = function (chunk, encoding, cb) {
-  throw new Error('not implemented')
+  cb(null, chunk)
 }
 
 BulkTransform.prototype._writev = function (chunks, cb) {
@@ -163,16 +165,17 @@ function done (stream, er) {
   return stream.push(null)
 }
 
-BulkTransform.obj = function (opts, transform) {
+BulkTransform.obj = function (opts, transform, flush) {
   if (typeof opts === 'function') {
+    flush = transform
     transform = opts
     opts = {}
   }
 
+  opts = opts || {}
   opts.objectMode = true
-  opts.transform = transform
 
-  return new BulkTransform(opts)
+  return new BulkTransform(opts, transform, flush)
 }
 
 module.exports = BulkTransform
