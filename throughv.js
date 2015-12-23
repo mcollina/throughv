@@ -73,6 +73,9 @@ function BulkTransform (options, transform, flush) {
   // sync guard flag.
   this._readableState.sync = false
 
+  // destroyed status
+  this._destroyed = false
+
   if (options) {
     if (typeof options.transform === 'function') {
       this._transform = options.transform
@@ -132,7 +135,7 @@ BulkTransform.prototype._read = function (n) {
 
   if (ts.entries !== null && ts.entriescb && !ts.transforming) {
     ts.transforming = true
-    parallel(this, process, ts.entries, ts.afterTransform)
+    parallel(this, doTransform, ts.entries, ts.afterTransform)
   } else {
     // mark that we need a transform, so that any data that comes in
     // will get processed, now that we've asked for it.
@@ -140,7 +143,20 @@ BulkTransform.prototype._read = function (n) {
   }
 }
 
-function process (entry, cb) {
+BulkTransform.prototype.destroy = function (err) {
+  if (this._destroyed) return
+  this._destroyed = true
+
+  var self = this
+  process.nextTick(function () {
+    if (err) {
+      self.emit('error', err)
+    }
+    self.emit('close')
+  })
+}
+
+function doTransform (entry, cb) {
   this._transform(entry.chunk, entry.encoding, cb)
 }
 

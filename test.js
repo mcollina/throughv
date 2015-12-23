@@ -186,3 +186,14 @@ test('flush throughv', function (t) {
     cb()
   }
 })
+
+test('destroy', function (t) {
+  t.plan(1)
+
+  var throughv = Throughv()
+  throughv.destroy()
+
+  throughv.on('close', function () {
+    t.pass('close emitted')
+  })
+})
