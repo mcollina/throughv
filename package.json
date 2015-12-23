@@ -28,6 +28,7 @@
     "inherits": "~2.0.1"
   },
   "devDependencies": {
+    "callback-stream": "^1.1.0",
     "faucet": "0.0.1",
     "pre-commit": "^1.1.2",
     "standard": "^5.4.1",

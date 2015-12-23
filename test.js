@@ -2,23 +2,22 @@
 
 var Readable = require('readable-stream').Readable
 var Writable = require('readable-stream').Writable
+var callbackStream = require('callback-stream')
 var test = require('tape')
 var Throughv = require('./')
 
-test('process things in parallel', function (t) {
+function itWorksInObjectMode (t, getInstance) {
   t.plan(6)
 
-  var throughv = new Throughv({ objectMode: true })
   var list = ['a', 'b', 'c']
   var transformed = 0
-
-  throughv._transform = function (chunk, enc, cb) {
+  var throughv = getInstance(function (chunk, enc, cb) {
     t.equal(transformed, 0, 'chunk processed in parallel')
     setImmediate(function () {
       transformed++
       cb(null, chunk)
     })
-  }
+  })
 
   throughv.cork()
   list.forEach(throughv.write.bind(throughv))
@@ -26,6 +25,43 @@ test('process things in parallel', function (t) {
 
   throughv.on('data', function (chunk) {
     t.equal(chunk, list.shift())
+  })
+}
+
+function itWorksWithBuffers (t, getInstance) {
+  t.plan(2)
+
+  var list = []
+  for (var i = 0; i < 2 * 16 * 1024; i++) {
+    list.push(new Buffer(1024))
+  }
+  var transformed = 0
+  var throughv = getInstance(function (chunk, enc, cb) {
+    if (transformed % (16 * 1024 * 1024)) {
+      t.fail('chunks not processed in parallel')
+    }
+    setImmediate(function () {
+      transformed++
+      cb(null, chunk)
+    })
+  })
+
+  throughv.cork()
+  list.forEach(throughv.write.bind(throughv))
+  throughv.uncork()
+  throughv.end()
+
+  throughv.pipe(callbackStream(function (err, list) {
+    t.error(err)
+    t.equal(list.length, 2 * 16 * 1024)
+  }))
+}
+
+test('process things in parallel in object mode', function (t) {
+  itWorksInObjectMode(t, function (transform) {
+    var throughv = new Throughv({ objectMode: true })
+    throughv._transform = transform
+    return throughv
   })
 })
 
@@ -68,4 +104,22 @@ test('piping still works', function (t) {
   writable.on('finish', t.end.bind(t))
 
   readable.pipe(throughv).pipe(writable)
+})
+
+test('throughv.obj', function (t) {
+  itWorksInObjectMode(t, function (transform) {
+    return Throughv.obj(transform)
+  })
+})
+
+test('process things in parallel with buffers', function (t) {
+  itWorksWithBuffers(t, function (transform) {
+    var throughv = new Throughv()
+    throughv._transform = transform
+    return throughv
+  })
+})
+
+test('throughv', function (t) {
+  itWorksWithBuffers(t, Throughv)
 })

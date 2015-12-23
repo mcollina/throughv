@@ -45,8 +45,15 @@ function afterTransform (stream, er, data) {
   }
 }
 
-function BulkTransform (options) {
+function BulkTransform (options, transform) {
   if (!(this instanceof BulkTransform)) {
+    if (typeof options === 'function') {
+      transform = options
+      options = {}
+    }
+    if (transform) {
+      options.transform = transform
+    }
     return new BulkTransform(options)
   }
 
@@ -154,6 +161,18 @@ function done (stream, er) {
   }
 
   return stream.push(null)
+}
+
+BulkTransform.obj = function (opts, transform) {
+  if (typeof opts === 'function') {
+    transform = opts
+    opts = {}
+  }
+
+  opts.objectMode = true
+  opts.transform = transform
+
+  return new BulkTransform(opts)
 }
 
 module.exports = BulkTransform
