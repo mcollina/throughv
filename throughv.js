@@ -157,7 +157,8 @@ BulkTransform.prototype.destroy = function (err) {
 }
 
 function doTransform (entry, cb) {
-  this._transform(entry.chunk, entry.encoding, cb)
+  var transform = this._transform
+  transform(entry.chunk, entry.encoding, cb)
 }
 
 function done (stream, er) {
