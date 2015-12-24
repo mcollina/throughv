@@ -1,6 +1,6 @@
 {
   "name": "throughv",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Bulk through",
   "main": "throughv.js",
   "scripts": {
