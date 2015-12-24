@@ -3,7 +3,7 @@
 **stream.Transform with parallel chunk processing**
 
 Same as [Rod Vagg](https://github.com/rvagg)'s
-[throughv](https://github.com/rvagg/throughv)
+[through2](https://github.com/rvagg/through2)
 but with parallel chunk processing. `throughv` is useful to
 augment/process data
 coming from a stream in a fast parallel fashion, e.g. fetching some
