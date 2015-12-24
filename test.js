@@ -197,3 +197,12 @@ test('destroy', function (t) {
     t.pass('close emitted')
   })
 })
+
+test('guard against push', function (t) {
+  t.plan(1)
+
+  Throughv(function (chunk, enc, cb) {
+    t.equal(this, undefined, 'this should not be set')
+    cb()
+  }).write('hello')
+})
