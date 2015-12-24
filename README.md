@@ -56,6 +56,10 @@ fs.createReadStream('data.csv')
 Note that `throughv.obj(fn)` is a convenience wrapper around `throughv({
 objectMode: true }, fn)`.
 
+## Install
+
+`npm i throughv --save`
+
 ## API
 
 <b><code>throughv([ options, ] [ transformFunction ] [, flushFunction
