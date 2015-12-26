@@ -13,7 +13,7 @@ relevant data from a database.
 fs.createReadStream('ex.txt')
   .pipe(throughv(function (chunk, enc, callback) {
     // this happen in parallel for all chunks
-    // in the stream's buffer, the buffer size
+    // in the stream's buffer, the parallelism
     // is determined by highWaterMark
 
     for (var i = 0; i < chunk.length; i++)
@@ -34,7 +34,7 @@ fs.createReadStream('data.csv')
   .pipe(csv2())
   .pipe(throughv.obj(function (chunk, enc, callback) {
     // this happen in parallel for all chunks
-    // in the stream's buffer, the buffer size
+    // in the stream's buffer, the parallelism
     // is determined by highWaterMark
 
     var data = {
@@ -76,6 +76,10 @@ documentation for the exact rules of the `transformFunction` (i.e.
 The options argument is optional and is passed straight through to
 `stream.Transform`. So you can use `objectMode:true` if you are
 processing non-binary streams (or just use `throughv.obj()`).
+
+In order to set the maximum parallelism at which the instance will
+process chunks, __set highWaterMark__. It is defaulted at 16KB for
+binary streams, and at 16 for object streams.
 
 The `options` argument is first, unlike standard convention, because if
 I'm passing in an anonymous function then I'd prefer for the options
