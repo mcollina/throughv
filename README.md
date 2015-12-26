@@ -89,10 +89,7 @@ argument to not get lost at the end of the call:
 fs.createReadStream('/tmp/important.dat')
   .pipe(throughv({ objectMode: true, allowHalfOpen: false },
     function (chunk, enc, cb) {
-      cb(null, 'wut?') // note we can use the second argument on the
-callback
-                       // to provide data as an alternative to
-this.push('wut?')
+      cb(null, 'wut?')
     }
   )
   .pipe(fs.createWriteStream('/tmp/wut.txt'))
