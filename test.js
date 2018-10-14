@@ -1,12 +1,11 @@
 'use strict'
 
+var Buffer = require('safe-buffer').Buffer
 var Readable = require('readable-stream').Readable
 var Writable = require('readable-stream').Writable
 var callbackStream = require('callback-stream')
 var test = require('tape')
 var Throughv = require('./')
-
-var bufferFrom = Buffer.from && Buffer.from !== Uint8Array.from
 
 function itWorksInObjectMode (t, getInstance) {
   t.plan(6)
@@ -35,7 +34,7 @@ function itWorksWithBuffers (t, getInstance) {
 
   var list = []
   for (var i = 0; i < 2 * 16 * 1024; i++) {
-    list.push(bufferFrom ? Buffer.alloc(1024) : new Buffer(1024))
+    list.push(Buffer.alloc(1024))
   }
   var transformed = 0
   var throughv = getInstance(function (chunk, enc, cb) {
