@@ -4,7 +4,8 @@
   "description": "Bulk through",
   "main": "throughv.js",
   "scripts": {
-    "test": "standard && tape test.js | faucet"
+    "test": "tape test.js | faucet",
+    "lint": "standard"
   },
   "precommit": "test",
   "repository": {
