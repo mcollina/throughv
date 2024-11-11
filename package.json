@@ -26,7 +26,7 @@
   "dependencies": {
     "fastparallel": "^2.3.0",
     "inherits": "^2.0.3",
-    "readable-stream": "^2.3.6"
+    "readable-stream": "^4.5.2"
   },
   "devDependencies": {
     "callback-stream": "^1.1.0",
